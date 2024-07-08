@@ -42,16 +42,16 @@
             appId = [dict objectForKey:@"FacebookAppID"];
         }
         
-        NSData * _Nullable imgShare = nil;
-        if ([fileManager fileExistsAtPath:stickerImage]) {
-            imgShare = [[NSData alloc] initWithContentsOfFile:stickerImage];
-        }
-        
+        // NSData * _Nullable imgShare = nil;
+        // if ([fileManager fileExistsAtPath:stickerImage]) {
+        //     imgShare = [[NSData alloc] initWithContentsOfFile:stickerImage];
+        // }
+
         // Assign background image asset and attribution link URL to pasteboard
         NSMutableDictionary *pasteboardItems = [[NSMutableDictionary alloc] init];
-        if (imgShare != nil) {
-            [pasteboardItems setObject:imgShare forKey:[NSString stringWithFormat:@"%@.stickerImage", destination]];
-        } 
+        // if (imgShare != nil) {
+        //     [pasteboardItems setObject:imgShare forKey:[NSString stringWithFormat:@"%@.stickerImage", destination]];
+        // } 
         
         if (![backgroundTopColor isKindOfClass:[NSNull class]]) {
             [pasteboardItems setObject:backgroundTopColor forKey:[NSString stringWithFormat:@"%@.backgroundTopColor",destination]];
