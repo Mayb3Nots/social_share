@@ -105,8 +105,9 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             intent.putExtra("bottom_background_color", backgroundBottomColor)
             // Instantiate activity and verify it will resolve implicit intent
             // activity!!.grantUriPermission(appName, stickerImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            if (activity!!.packageManager.resolveActivity(intent, 0) != null) {
-                activeContext!!.startActivity(intent)
+            Activity activity = getActivity();
+            if (activity.getPackageManager().resolveActivity(intent, 0) != null) {
+                activity.startActivityForResult(intent, 0);
                 result.success("success")
             } else {
                 result.success("error")
