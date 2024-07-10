@@ -80,13 +80,9 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                 val backfile = File(activeContext!!.cacheDir, backgroundImage)
                 val backgroundImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
                 intent.setDataAndType(backgroundImageFile, "image/*")
-            }  
-            
-            if (backgroundVideo!=null) {
-                //check if background video is also provided
-                val backfile =  File(activeContext!!.cacheDir,backgroundVideo)
-                val backgroundVideoFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
-                intent.setDataAndType(backgroundVideoFile,"video/*")
+
+                // Grant Instagram/Facebook permission to read the file
+                activity!!.grantUriPermission(appName, backgroundImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
 
             intent.putExtra("source_application", appId)
@@ -95,7 +91,6 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             intent.putExtra("bottom_background_color", backgroundBottomColor)
 
             // Instantiate activity and verify it will resolve implicit intent
-            activity!!.grantUriPermission(appName, backgroundImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             if (activity!!.packageManager.resolveActivity(intent, 0) != null) {
                 activeContext!!.startActivity(intent)
                 result.success("success")
