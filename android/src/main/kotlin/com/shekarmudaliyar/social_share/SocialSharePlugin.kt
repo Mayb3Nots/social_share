@@ -49,49 +49,39 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
 
         if (call.method == "shareInstagramStory" || call.method == "shareFacebookStory") {
 
-            val destination : String
-            val appName : String
-            val intentString : String
+            val appName: String
+            val intentString: String
 
             if (call.method == "shareInstagramStory") {
-                destination = "com.instagram.sharedSticker"
                 appName = "com.instagram.android"
                 intentString = "com.instagram.share.ADD_TO_STORY"
             } else {
-                destination = "com.facebook.sharedSticker";
-                appName = "com.facebook.katana";
+                appName = "com.facebook.katana"
                 intentString = "com.facebook.stories.ADD_TO_STORY"
             }
 
-            val stickerImage: String? = call.argument("stickerImage")
             val backgroundTopColor: String? = call.argument("backgroundTopColor")
             val backgroundBottomColor: String? = call.argument("backgroundBottomColor")
             val attributionURL: String? = call.argument("attributionURL")
             val backgroundImage: String? = call.argument("backgroundImage")
-            val backgroundVideo: String? = call.argument("backgroundVideo")
-
-            // val file =  File(activeContext!!.cacheDir,stickerImage)
-            // val stickerImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
             val appId: String? = call.argument("appId")
 
             val intent = Intent(intentString)
 
-            intent.type = "image/*"
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            // intent.putExtra("interactive_asset_uri", stickerImageFile)
 
             if (call.method == "shareFacebookStory") {
                 intent.putExtra("com.facebook.platform.extra.APPLICATION_ID", appId)
             }
 
-            if (backgroundImage!=null) {
-                //check if background image is also provided
-                val backfile =  File(activeContext!!.cacheDir,backgroundImage)
+            if (backgroundImage != null) {
+                // check if background image is provided
+                val backfile = File(activeContext!!.cacheDir, backgroundImage)
                 val backgroundImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
-                intent.setDataAndType(backgroundImageFile,"image/*")
-            }
-
+                intent.setDataAndType(backgroundImageFile, "image/*")
+            }  
+            
             if (backgroundVideo!=null) {
                 //check if background video is also provided
                 val backfile =  File(activeContext!!.cacheDir,backgroundVideo)
@@ -103,16 +93,16 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             intent.putExtra("content_url", attributionURL)
             intent.putExtra("top_background_color", backgroundTopColor)
             intent.putExtra("bottom_background_color", backgroundBottomColor)
+
             // Instantiate activity and verify it will resolve implicit intent
-            // activity!!.grantUriPermission(appName, stickerImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            Activity activity = getActivity();
-            if (activity.getPackageManager().resolveActivity(intent, 0) != null) {
-                activity.startActivityForResult(intent, 0);
+            activity!!.grantUriPermission(appName, backgroundImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (activity!!.packageManager.resolveActivity(intent, 0) != null) {
+                activeContext!!.startActivity(intent)
                 result.success("success")
             } else {
                 result.success("error")
             }
-        } else if (call.method == "shareOptions") {
+    } else if (call.method == "shareOptions") {
             //native share options
             val content: String? = call.argument("content")
             val image: String? = call.argument("image")
@@ -156,7 +146,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                     theContent.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
                 val clip = ClipData.newUri(theContent, "Image", imageUri)
                 clipboard.setPrimaryClip(clip)
-                
+
             } else if (content != null) {
                 val clip = ClipData.newPlainText("", content)
                 clipboard.setPrimaryClip(clip)
@@ -165,7 +155,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                 return
             }
             result.success("success")
-        } 
+        }
         else if (call.method == "shareWhatsapp") {
             //shares content on WhatsApp
             val content: String? = call.argument("content")
