@@ -95,7 +95,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                 activeContext!!.startActivity(intent)
                 result.success("success")
             } else {
-                result.success("error")
+                result.success("failed to load intent")
             }
     } else if (call.method == "shareOptions") {
             //native share options
